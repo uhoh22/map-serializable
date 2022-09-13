@@ -1,0 +1,91 @@
+package com.example.demo;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+@Controller
+public class DemoController {
+    Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    @GetMapping("/test")
+    public void test() {
+        System.out.println("@@@@@ START @@@@@");
+        logger.debug("test");
+        
+        List<Map<String, String>> l1 = new ArrayList<Map<String, String>>();
+
+        Map<String, String> m1 = new HashMap<String, String>();
+        m1.put("1", "1233001");
+        m1.put("2", "1233002");
+        m1.put("3", "1233003");
+
+
+        Map<String, String> m2 = new HashMap<String, String>();
+        m2.put("11", "2978011");
+        m2.put("12", "2978012");
+        m2.put("13", "2978013");
+
+        l1.add(m1);
+        l1.add(m2);
+
+        for (Map<String, String> m : l1) {
+            m.forEach((key, value) -> {
+                System.out.println(key + " ==> " + value);
+            }); 
+        }
+
+        System.out.println(l1.toString());
+        System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+
+        System.out.println(m1.toString());
+        
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            String jsonResult = mapper.writerWithDefaultPrettyPrinter()
+              .writeValueAsString(m1);
+              System.out.println(jsonResult);
+              System.out.println(jsonResult.toString());
+              this.sc(jsonResult);
+        } catch (JsonProcessingException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        System.out.println("@@@@@ END @@@@@");
+    }
+
+    public void sc(String jsonInput) {
+        ObjectMapper mapper = new ObjectMapper();
+        TypeReference<HashMap<String, String>> typeRef = new TypeReference<HashMap<String, String>>() {};
+        try {
+            Map<String, String> map = mapper.readValue(jsonInput, typeRef);
+
+            System.out.println("##########################");
+            System.out.println(map.toString());
+            map.forEach((key, value) -> {
+                System.out.println(value);
+            });
+            System.out.println("##########################");
+        } catch (JsonMappingException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (JsonProcessingException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+
+    }
+}
+
